@@ -15,14 +15,12 @@ class CreatePluginversionsTable extends Migration
     {
         Schema::create('pluginversions', function (Blueprint $table) {
             $table->increments("id");
-            $table->integer("_pluginname_id")->unsigned();
+            $table->integer("_pluginname_id");
             $table->string("_pluginversion",30);
             $table->string("_pluginversionuseratio",30);
             $table->timestamps();
         });
-        Schema::table('pluginversions', function (Blueprint $table) {
-            $table->foreign("_pluginname_id")->references("id")->on("pluginnames")->nullable();
-        });
+        
     }
 
     /**
