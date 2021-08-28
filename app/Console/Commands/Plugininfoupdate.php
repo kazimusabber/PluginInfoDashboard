@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use App\Plugindownload;
 use App\Pluginversion;
 
@@ -51,9 +52,9 @@ class Plugininfoupdate extends Command
            }
         }
         $wocommercedownload_key = json_encode(array_keys($downloadwoocommerce->json()));
-        $this->api_set_redis("wocommercedownloadkey",$wocommercedownload_key);
+        Cache::put("wocommercedownloadkey",$wocommercedownload_key);
         $wocommerdownload_value = json_encode(array_values($downloadwoocommerce->json()));
-        $this->api_set_redis("wocommercedownloadvalue",$wocommerdownload_value);
+        Cache::put("wocommercedownloadvalue",$wocommerdownload_value);
 
 
         $versionwoocommerce = Http::get('http://api.wordpress.org/stats/plugin/1.0/woocommerce');
@@ -67,9 +68,9 @@ class Plugininfoupdate extends Command
         }
 
         $versionwoocommerce_key = json_encode(array_keys($versionwoocommerce->json()));
-        $this->api_set_redis("versionwoocommercekey",$versionwoocommerce_key);
+        Cache::put("versionwoocommercekey",$versionwoocommerce_key);
         $versionwoocommerce_value = json_encode(array_values($versionwoocommerce->json()));
-        $this->api_set_redis("versionwoocommercevalue",$versionwoocommerce_value );
+        Cache::put("versionwoocommercevalue",$versionwoocommerce_value );
 
 
 
@@ -83,9 +84,9 @@ class Plugininfoupdate extends Command
            }
         }
         $downloadcontactform_key = json_encode(array_keys($downloadcontactform->json()));
-        $this->api_set_redis("downloadcontactformkey",$downloadcontactform_key);
+        Cache::put("downloadcontactformkey",$downloadcontactform_key);
         $downloadcontactform_value = json_encode(array_values($downloadcontactform->json()));
-        $this->api_set_redis("downloadcontactformvalue",$downloadcontactform_value);
+        Cache::put("downloadcontactformvalue",$downloadcontactform_value);
         
 
         $versioncontactform = Http::get('http://api.wordpress.org/stats/plugin/1.0/contact-form-7');
@@ -99,9 +100,9 @@ class Plugininfoupdate extends Command
            }
         }
         $versioncontactform_key = json_encode(array_keys($versioncontactform->json()));
-        $this->api_set_redis("versioncontactformkey",$versioncontactform_key);
+        Cache::put("versioncontactformkey",$versioncontactform_key);
          $versioncontactform_value = json_encode(array_values($versioncontactform->json()));
-        $this->api_set_redis("versioncontactformvalue",$versionwoocommerce_value );
+        Cache::put("versioncontactformvalue",$versionwoocommerce_value );
 
 
         $downloadclassiceditor = Http::get('http://api.wordpress.org/stats/plugin/1.0/downloads.php?slug=classic-editor');
@@ -115,9 +116,9 @@ class Plugininfoupdate extends Command
             }
         }
         $downloadclassiceditor_key = json_encode(array_keys($downloadclassiceditor->json()));
-        $this->api_set_redis("downloadclassiceditorkey",$downloadclassiceditor_key);
+        Cache::put("downloadclassiceditorkey",$downloadclassiceditor_key);
         $downloadclassiceditor_value = json_encode(array_values($downloadcontactform->json()));
-        $this->api_set_redis("downloadclassiceditorvalue",$downloadclassiceditor_value);
+        Cache::put("downloadclassiceditorvalue",$downloadclassiceditor_value);
 
 
 
@@ -131,9 +132,9 @@ class Plugininfoupdate extends Command
            }
         }
         $versionclassiceditor_key = json_encode(array_keys($versionclassiceditor->json()));
-        $this->api_set_redis("versionclassiceditorkey",$versionclassiceditor_key);
+        Cache::put("versionclassiceditorkey",$versionclassiceditor_key);
         $versionclassiceditor_value = json_encode(array_values($versionclassiceditor->json()));
-        $this->api_set_redis("versionclassiceditorvalue",$versionclassiceditor_value );
+        Cache::put("versionclassiceditorvalue",$versionclassiceditor_value );
 
 
 
@@ -148,9 +149,9 @@ class Plugininfoupdate extends Command
             }
         }
         $downloadwordpressseo_key = json_encode(array_keys($downloadwordpressseo->json()));
-        $this->api_set_redis("downloadwordpressseokey",$downloadwordpressseo_key);
+        Cache::put("downloadwordpressseokey",$downloadwordpressseo_key);
         $downloadwordpressseo_value = json_encode(array_values($downloadwordpressseo->json()));
-        $this->api_set_redis("downloadwordpressseovalue",$downloadwordpressseo_value);
+        Cache::put("downloadwordpressseovalue",$downloadwordpressseo_value);
 
 
 
@@ -164,24 +165,29 @@ class Plugininfoupdate extends Command
            }
         }
         $versionwordpressseo_key = json_encode(array_keys($versionwordpressseo->json()));
-        $this->api_set_redis("versionwordpressseokey",$versionwordpressseo_key);
+        Cache::put("versionwordpressseokey",$versionwordpressseo_key);
         $versionwordpressseo_value = json_encode(array_values($versionwordpressseo->json()));
-        $this->api_set_redis("versionwordpressseovalue",$versionwordpressseo_value);
+        Cache::put("versionwordpressseovalue",$versionwordpressseo_value);
 
 
 
 
-        $woocommerceinfo = Http::get('https://api.wordpress.org/plugins/info/1.0/woocommerce.json');
-        $this->api_set_redis("woocommerceinfo",$woocommerceinfo);  
+        $woocommerceinfo = Http::post('https://api.wordpress.org/plugins/info/1.0/woocommerce.json');
+        
+        Cache::forget('woocommerce_info');
+        Cache::put("woocommerce_info",$woocommerceinfo->json());  
 
-        $contactforminfo = Http::get('https://api.wordpress.org/plugins/info/1.0/contact-form-7.json');
-        $this->api_set_redis("contactforminfo",$contactforminfo);
+        $contactforminfo = Http::post('https://api.wordpress.org/plugins/info/1.0/contact-form-7.json');
+        Cache::forget('contactform_info');
+        Cache::put("contactform_info",$contactforminfo->json());
 
-        $classiceditorinfo = Http::get('https://api.wordpress.org/plugins/info/1.0/classic-editor.json');
-        $this->api_set_redis("classiceditorinfo",$classiceditorinfo);
+        $classiceditorinfo = Http::post('https://api.wordpress.org/plugins/info/1.0/classic-editor.json');
+        Cache::forget('classiceditor_info');
+        Cache::put("classiceditor_info",$classiceditorinfo->json());
 
-        $yoastseoinfo = Http::get('https://api.wordpress.org/plugins/info/1.0/wordpress-seo.json');
-        $this->api_set_redis("yoastseoinfo",$yoastseoinfo);
+        $yoastseoinfo = Http::post('https://api.wordpress.org/plugins/info/1.0/wordpress-seo.json');
+        Cache::forget('yoastseo_info');
+        Cache::put("yoastseo_info",$yoastseoinfo->json());
 
     }
 
