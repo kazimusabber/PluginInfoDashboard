@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use App\Plugindownload;
 use App\Pluginversion;
 class HomeController extends Controller
@@ -31,7 +32,7 @@ class HomeController extends Controller
         $enddate = $request->enddate;
         $pluginid = $request->pluginname;
         
-
+        
         if(!empty($startdate) && $pluginid == 1){
             $wocommercedownlaodinfo = Plugindownload::where('_pluginname_id',1)->where('_download_date','>=',$startdate)->where('_download_date','<=',$enddate)->select('_download_date','_totaldownload')->get();
             
@@ -114,8 +115,8 @@ class HomeController extends Controller
 
         }else{
             
-            $downloadkey = $this->api_get_redis("wocommercedownloadkey");
-            $downloadvalue = $this->api_get_redis("wocommercedownloadvalue");
+            $downloadkey = Cache::get("wocommercedownloadkey");
+            $downloadvalue = Cache::get("wocommercedownloadvalue");
             $name = "WooCommerce";
             $start_date = "";
             $end_date = ""; 
@@ -163,11 +164,12 @@ class HomeController extends Controller
    
     public function plugininfo($plugin){
         if($plugin == 'woocommerce'){
-            $downloadkey = $this->api_get_redis("wocommercedownloadkey");
-            $downloadvalue = $this->api_get_redis("wocommercedownloadvalue");
-            $versionkey = $this->api_get_redis("versionwoocommercekey");
-            $versionvalue = $this->api_get_redis("versionwoocommercevalue");
-            $info = json_decode($this->api_get_redis("woocommerceinfo"),true);
+            $downloadkey = Cache::get("wocommercedownloadkey");
+            $downloadvalue = Cache::get("wocommercedownloadvalue");
+            $versionkey = Cache::get("versionwoocommercekey");
+            $versionvalue = Cache::get("versionwoocommercevalue");
+            $info =Cache::get("woocommerce_info");
+
             $pluginname = "WooCommerce";
             $yesterdaydownload = Plugindownload::where('_pluginname_id',1)->orderBy("id", "desc")->take(1)->get()->sum('_totaldownload');
             $lastsevendaydownload = Plugindownload::where('_pluginname_id',1)->orderBy("id", "desc")->take(7)->get()->sum('_totaldownload');
@@ -175,40 +177,40 @@ class HomeController extends Controller
             $alltimedownload = Plugindownload::where('_pluginname_id',1)->sum('_totaldownload');
         }
         if($plugin == 'contact-form-7'){
-            $downloadkey = $this->api_get_redis("downloadcontactformkey");
-            $downloadvalue = $this->api_get_redis("downloadcontactformvalue");
-            $versionkey = $this->api_get_redis("versioncontactformkey");
-            $versionvalue = $this->api_get_redis("versioncontactformvalue");
+            $downloadkey = Cache::get("downloadcontactformkey");
+            $downloadvalue = Cache::get("downloadcontactformvalue");
+            $versionkey = Cache::get("versioncontactformkey");
+            $versionvalue = Cache::get("versioncontactformvalue");
             $pluginname = "Contact Form 7";
-            $info = json_decode($this->api_get_redis("contactforminfo"),true);
+            $info = Cache::get("contactform_info");
             $yesterdaydownload = Plugindownload::where('_pluginname_id',2)->orderBy("id", "desc")->take(1)->get()->sum('_totaldownload');
             $lastsevendaydownload = Plugindownload::where('_pluginname_id',2)->orderBy("id", "desc")->take(7)->get()->sum('_totaldownload');
             $alltimedownload = Plugindownload::where('_pluginname_id',2)->sum('_totaldownload');
         }
         if($plugin == 'classic-editor'){
-            $downloadkey  = $this->api_get_redis("downloadclassiceditorkey");
-            $downloadvalue = $this->api_get_redis("downloadclassiceditorvalue");
-            $versionkey = $this->api_get_redis("versionclassiceditorkey");
-            $versionvalue = $this->api_get_redis("versionclassiceditorvalue");
+            $downloadkey  = Cache::get("downloadclassiceditorkey");
+            $downloadvalue = Cache::get("downloadclassiceditorvalue");
+            $versionkey = Cache::get("versionclassiceditorkey");
+            $versionvalue = Cache::get("versionclassiceditorvalue");
             $pluginname = "Classic Editor";
-            $info = json_decode($this->api_get_redis("classiceditorinfo"),true);
+            $info = Cache::get("classiceditor_info");
             $yesterdaydownload = Plugindownload::where('_pluginname_id',3)->orderBy("id", "desc")->take(1)->get()->sum('_totaldownload');
             $lastsevendaydownload = Plugindownload::where('_pluginname_id',3)->orderBy("id", "desc")->take(7)->get()->sum('_totaldownload');
             $alltimedownload = Plugindownload::where('_pluginname_id',3)->get()->sum('_totaldownload');
         }
         if($plugin == 'yoast-seo'){
-            $downloadkey = $this->api_get_redis("downloadwordpressseokey");
-            $downloadvalue = $this->api_get_redis("downloadwordpressseovalue");
-            $versionkey = $this->api_get_redis("versionwordpressseokey");
-            $versionvalue = $this->api_get_redis("versionwordpressseovalue");
+            $downloadkey = Cache::get("downloadwordpressseokey");
+            $downloadvalue = Cache::get("downloadwordpressseovalue");
+            $versionkey = Cache::get("versionwordpressseokey");
+            $versionvalue = Cache::get("versionwordpressseovalue");
             $pluginname = "Yoast Seo";
-            $info = json_decode($this->api_get_redis("yoastseoinfo"),true);
+            $info = Cache::get("yoastseo_info");
             $yesterdaydownload = Plugindownload::where('_pluginname_id',4)->orderBy("id", "desc")->take(1)->get()->sum('_totaldownload');
             $lastsevendaydownload = Plugindownload::where('_pluginname_id',4)->orderBy("id", "desc")->take(7)->get()->sum('_totaldownload');
             $alltimedownload = Plugindownload::where('_pluginname_id',4)->get()->sum('_totaldownload');
         }
         
-        
+       
         return view('plugin-info',compact(['downloadkey','downloadvalue','versionkey','versionvalue','pluginname','yesterdaydownload','lastsevendaydownload','alltimedownload','info']));
     }
    
