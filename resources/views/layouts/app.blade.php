@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
 </head>
 <body>
     <div id="app">
@@ -63,6 +63,7 @@
                                     </form>
                                 </div>
                             </li>
+                            <div class="dropdown">
                         @endguest
                     </ul>
                 </div>
@@ -74,7 +75,7 @@
         </main>
     </div>
     <script src="{{ asset('js/jquery.min.js')}}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
     <script src="{{ asset('js/Chart.bundle.js') }}"></script>
      @yield('script')
 </body>
